@@ -8,6 +8,8 @@ GameMain::GameMain()
 	map.Load(_stage_num);
 	CommentWindow::pos = Vec2f(-WIDTH / 2, -HEIGHT / 2);
 	CommentWindow::size = Vec2f(WIDTH, HEIGHT);
+	IManger.setup();
+
 }
 
 GameMain::~GameMain()
@@ -20,9 +22,10 @@ void GameMain::update()
 	ui.update();
 	enemyholder.update();
 	GetPlayer->update();
+	IManger.update();
 	map.push(GetPlayer->getPos(), GetPlayer->getSize(), GetPlayer->vec);
 	map.update();
-	itemmanager.update();
+	
 	comment.update();
 
 	
@@ -42,7 +45,7 @@ void GameMain::draw()
 	map.draw(camera_pos);
 	enemyholder.draw();
 	GetPlayer->draw();
-	itemmanager.draw();
+	IManger.draw();
 
 	glPopMatrix();
 
