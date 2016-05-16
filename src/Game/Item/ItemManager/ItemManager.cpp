@@ -1,42 +1,10 @@
 #include "ItemManager.h"
 
-ItemManager::ItemManager() {
+ItemManager::ItemManager() :
+	block_size(Vec2f::Zero())
+{
 
-	std::string item_file_path = "res/stage/stage10/item.txt";
-	std::ifstream item_file(item_file_path);
-	assert(!item_file.fail());
 
-	std::string block_size_file_path = "res/stage/stage10/BlockSize.txt";
-	std::ifstream block_size_file(block_size_file_path);
-	assert(!block_size_file.fail());
-
-	Vec2f block_size;
-	block_size_file >> block_size.x();
-	block_size_file >> block_size.y();
-
-	while (!item_file.eof())
-	{
-		int item_id;
-		Vec2f pos;
-		item_file >> item_id;
-		item_file >> pos.x();
-		item_file >> pos.y();
-
-		std::function<void()> createItem[] = {
-
-			[&]() {
-
-			item_list.emplace_back(new Bomb(pos, block_size, Vec2f::Zero()));
-		},
-			[&]() {
-
-			item_list.emplace_back(new Bow(pos, block_size));
-		}
-		};
-
-		createItem[item_id]();
-
-	}
 }
 
 ItemManager::~ItemManager() {
@@ -44,23 +12,57 @@ ItemManager::~ItemManager() {
 
 }
 
+void ItemManager::setup() {
+
+	bomb_manager.deleteitem();
+	bow_manager.deleteitem();
+
+	std::string stage_item_file_path = "res/stage/stage10/item.txt";
+	std::ifstream stage_item_file(stage_item_file_path);
+	assert(!stage_item_file.fail());
+
+	std::string block_size_file_path = "res/stage/stage10/BlockSize.txt";
+	std::ifstream block_size_file(block_size_file_path);
+	assert(!block_size_file.fail());
+
+	block_size_file >> block_size.x();
+	block_size_file >> block_size.y();
+
+	int item_id;
+	Vec2f item_pos;
+
+	std::function<void()> createItem[] =
+	{
+		[&] {
+
+		bomb_manager.setup(item_pos, block_size);
+	},
+		[&] {
+
+		bow_manager.setup(item_pos, block_size);
+	}
+	};
+
+	while (!stage_item_file.eof())
+	{
+		stage_item_file >> item_id;
+		stage_item_file >> item_pos.x();
+		stage_item_file >> item_pos.y();
+
+		createItem[item_id]();
+	}
+
+}
+
 void ItemManager::update() {
 
 
-
-	for (auto item : item_list)
-	{
-		item->update();
-	}
+	bomb_manager.update();
+	bow_manager.update();
 }
 
 void ItemManager::draw() {
 
-	for (auto item : item_list)
-	{
-		if (item->is_draw != true)
-			continue;
-
-		item->draw();
-	}
+	bomb_manager.draw();
+	bow_manager.draw();
 }

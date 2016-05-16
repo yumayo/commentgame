@@ -1,5 +1,5 @@
 #pragma once
-#include "../ItemBase.h"
+#include "../../ItemBase.h"
 
 
 class Bomb : public ItemBase
@@ -13,17 +13,21 @@ public:
 	void update() override;
 	void draw() override;
 
+	WritableP<bool> is_explosion;
+	WritableP<bool> is_respawn_bomb;
+
 private:
 
 	void countDown();
 	void animation();
-	void gravity();
+	void updatePos();
 
-
+	int respawn_time;
 	int explosion_count;
 	int explosion_end_count;
 	int animation_count;
-	bool is_explosion;
+	bool is_explosion_;
+	bool is_respawn_bomb_;
 
 	Vec2f cut_pos;
 	Vec2f cut_size;

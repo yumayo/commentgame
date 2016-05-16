@@ -1,7 +1,8 @@
 #pragma once
-#include "../Bomb/Bomb.h"
-#include "../Bow/Bow.h"
-#include "../../Taxture/Taxtures.h"
+#include "../Bow/BowManager/BowManager.h"
+#include "../GrowBombPlace/BombManager/BombManager.h"
+
+#define IManger ItemManager::get()
 
 
 class ItemManager
@@ -11,10 +12,23 @@ public:
 	ItemManager();
 	~ItemManager();
 
+
+	void setup();
 	void update();
 	void draw();
 
+	static ItemManager& get()
+	{
+		static ItemManager item_manager;
+
+		return item_manager;
+	}
+
 private:
 
-	std::list<ItemBase*> item_list;
+	
+	Vec2f block_size;
+	BombManager bomb_manager;
+	BowManager bow_manager;
+
 };
